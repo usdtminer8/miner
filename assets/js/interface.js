@@ -1,0 +1,188 @@
+var minersAddr = '0x2342b88957160189338Cd6B885Fa1B1324a3E2c1';
+var tokenAddr = '0x2859e4544c4bb03966803b044a93563bd2d0dd4d'; //SHIBA Bep20
+var minersAbi = [{"constant":true,"inputs":[],"name":"ceoAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyMiners","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"initialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"rt","type":"uint256"},{"name":"rs","type":"uint256"},{"name":"bs","type":"uint256"}],"name":"calculateTrade","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"eth","type":"uint256"},{"name":"contractBalance","type":"uint256"}],"name":"calculateEggBuy","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"marketEggs","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"sellEggs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"amount","type":"uint256"}],"name":"seedMarket","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"amount","type":"uint256"}],"name":"devFee","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"ref","type":"address"}],"name":"hatchEggs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getMyEggs","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"ref","type":"address"},{"name":"amount","type":"uint256"}],"name":"buyEggs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"lastHatch","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"claimedEggs","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"hatcheryMiners","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"EGGS_TO_HATCH_1MINERS","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"eth","type":"uint256"}],"name":"calculateEggBuySimple","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"eggs","type":"uint256"}],"name":"calculateEggSell","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"referrals","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"ceoAddress2","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"adr","type":"address"}],"name":"getEggsSinceLastHatch","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+var tokenAbi = [{"inputs":[{"internalType":"address","name":"logic","type":"address"},{"internalType":"address","name":"admin","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"implementation","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+var minersContract;
+var tokenContract;
+
+var canSell = true;
+var canHatch = true;
+
+function approveSHIB(trx) {
+	  tokenContract.methods.approve(minersAddr, trx).send({ from: currentAddr });
+}
+
+function spendLimit(callback) {
+  tokenContract.methods.allowance(currentAddr,minersAddr).call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function contractBalance(callback){
+    minersContract.methods.getBalance().call().then(result => {
+			  var amt = web3.utils.fromWei(result)
+				// console.log("balance" + amt)
+        callback(amt);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function userBalance(callback){
+    tokenContract.methods.balanceOf(currentAddr).call().then(result => {
+			  var amt = web3.utils.fromWei(result)
+				// console.log("balance" + amt)
+        callback(amt);
+				usrBal=amt;
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function buyEggs(ref, trx, callback){
+	if(+trx > +usrBal) {
+		alert("You don't have " + "BUSD" + " in your wallet");
+	}
+	else if(+trx > +spend) {
+		alert("Approve spending " + "BUSD" + " first");
+	} else {
+			minersContract.methods.buyEggs(ref, web3.utils.toWei(trx)).send({ from:currentAddr }).then(result => {
+        callback();
+    }).catch((err) => {
+        console.log(err)
+    });
+	}
+}
+
+
+function hatchEggs(ref,callback){
+    if (canHatch) {
+        canHatch = false;
+        minersContract.methods.hatchEggs(ref).send({from:currentAddr}).then(result => {
+            callback();
+        }).catch((err) => {
+            console.log(err)
+        });
+        setTimeout(function(){
+            canHatch = true;
+        },10000);
+    } else {
+        console.log('Cannot hatch yet...')
+    };
+}
+
+
+function sellEggs(callback){
+    if (canSell) {
+        canSell = false;
+        console.log('Selling');
+        minersContract.methods.sellEggs().send({from:currentAddr}).then(result => {
+            callback();
+        }).catch((err) => {
+            console.log(err)
+        });
+        setTimeout(function(){
+            canSell = true;
+        },10000);
+    } else {
+        console.log('Cannot sell yet...')
+    };
+}
+
+
+function calculateEggBuy(trx,contractBalance,callback){
+    minersContract.methods.calculateEggBuy(trx,contractBalance).call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+
+function calculateEggBuySimple(trx,callback){
+    minersContract.methods.calculateEggBuySimple(trx).call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+
+function calculateEggSell(eggs,callback){
+    minersContract.methods.calculateEggSell(eggs).call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function claimedEggs(callback){
+    minersContract.methods.claimedEggs().call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+
+function devFee(amount,callback){
+    minersContract.methods.devFee(amount).call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function getBalance(callback){
+    minersContract.methods.getBalance().call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function getEggsSinceLastHatch(address,callback){
+    minersContract.methods.getEggsSinceLastHatch(address).call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+
+function getMyEggs(callback){
+    minersContract.methods.getMyEggs().call({from:currentAddr}).then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function getMyMiners(callback){
+    minersContract.methods.getMyMiners().call({from:currentAddr}).then(result => {
+        if (result == '0x') {
+            result = 0;
+        }
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function lastHatch(address,callback){
+    minersContract.methods.lastHatch(address).call({from:currentAddr}).then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
+
+function marketEggs(callback){
+    minersContract.methods.marketEggs().call().then(result => {
+        callback(result);
+    }).catch((err) => {
+        console.log(err)
+    });
+}
