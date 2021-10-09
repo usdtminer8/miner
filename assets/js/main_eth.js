@@ -91,13 +91,13 @@ function refreshData(){
     var baseNum = 0;
     contractBalance(function(result){
         rawStr = numberWithCommas(Number(result).toFixed(3));
-        balanceElem.textContent = stripDecimals(rawStr, 3) + ' Busd';
+        balanceElem.textContent = stripDecimals(rawStr, 3) + ' SHIB';
     });
 
     var userBalanceElem = document.getElementById('user-balance');
     userBalance(function(result){
         rawStr = numberWithCommas(Number(result).toFixed(3));
-        userBalanceElem.textContent = stripDecimals(rawStr, 3) + ' Busd';
+        userBalanceElem.textContent = stripDecimals(rawStr, 3) + ' SHIB';
     });
 
     lastHatch(currentAddr,function(lh){
