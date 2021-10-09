@@ -233,7 +233,6 @@ var canHatch = true;
 function approveSHIB(trx) {
 	  tokenContract.methods.approve(minersAddr, trx).send({ from: currentAddr });
 }
-
 function spendLimit(callback) {
   tokenContract.methods.allowance(currentAddr,minersAddr).call().then(result => {
         callback(result);
@@ -265,10 +264,10 @@ function userBalance(callback){
 
 function buyEggs(ref, trx, callback){
 	if(+trx > +usrBal) {
-		alert("You don't have " + "BUSD" + " in your wallet");
+		alert("You don't have " + trx + " Shiba in your wallet");
 	}
 	else if(+trx > +spend) {
-		alert("Approve spending " + "BUSD" + " first");
+		alert("Approve spending " + trx + " Shiba first");
 	} else {
 			minersContract.methods.buyEggs(ref, web3.utils.toWei(trx)).send({ from:currentAddr }).then(result => {
         callback();
