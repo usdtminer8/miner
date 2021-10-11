@@ -130,6 +130,7 @@ nav {
     border-radius: 8px;
     margin-bottom: 30px;
     box-shadow: 0 0 20px 5px rgba(232,252,255, 0.4);
+	word-break: break-word;
 }
 
 .altcolor p {
