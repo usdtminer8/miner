@@ -107,7 +107,7 @@ function refreshData(){
         if(lastNumEggs!=eggs){
             lastNumEggs=eggs
             lastUpdate=new Date().getTime()
-            updateEggNumber(eggs/eggstohatch1)
+            //updateEggNumber(eggs/eggstohatch1)
         }
         var timeuntilfulldoc=document.getElementById('until-full')
         secondsuntilfull=eggstohatch1-eggs/lastNumMiners
@@ -156,7 +156,7 @@ function liveUpdateEggs(){
         }
         difference=(currentTime-lastUpdate)/1000
         additionalEggs=Math.floor(difference*lastNumMiners)
-        updateEggNumber(((lastNumEggs*1)+additionalEggs)/eggstohatch1)
+        //updateEggNumber(((lastNumEggs*1)+additionalEggs)/eggstohatch1)
     }
 }
 function updateSellPrice(){
