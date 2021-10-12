@@ -138,6 +138,7 @@
 								<div class="dm-container-right">
 									<h2>Mined</h2>
 									<p><span id="sell-price">?</span> SHIB</p>
+									<p><span id="sell-price-usd">?</span> USD</p>
 									<p><span id="until-full">?</span> until full</p>
 								</div>
 							</div>
@@ -218,14 +219,7 @@
 
 			</div>
 
-			<!-- scripts -->
-			<script>
-				window.tokenData = null;
-				$.get("https://api.coingecko.com/api/v3/coins/shiba-inu", function( data ) {
-				  window.tokenData  = data;
-				});
-			</script>
-			
+			<!-- scripts -->			
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.dropotron.min.js"></script>
 			<script src="assets/js/browser.min.js"></script>
@@ -236,6 +230,15 @@
 			<script src="assets/js/web3.min.js"></script>
 			<script src="assets/js/main_eth.js"></script>
 			<script src="assets/js/crypto-js/4.0.0/crypto-js.min.js"></script>
+			
+			<script>
+				window.tokenData = null;
+				$( document ).ready(function() {				
+					$.get("https://api.coingecko.com/api/v3/coins/shiba-inu", function( data ) {
+					  window.tokenData  = data;
+					});
+				});
+			</script>
 
 </body>
 

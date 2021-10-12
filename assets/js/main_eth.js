@@ -160,18 +160,22 @@ function liveUpdateEggs(){
     }
 }
 function updateSellPrice(){
-  var eggstoselldoc=document.getElementById('sell-price')
+  var eggstoselldoc=document.getElementById('sell-price');
+  var usdPriceNode = document.getElementById('sell-price-usd');
    getMyEggs(function(eggs){
         if (eggs > 0) {
             calculateEggSell(eggs,function(sun){
                 devFee(sun,function(fee){
 					var minedAmount = web3.utils.fromWei(sun) - web3.utils.fromWei(fee);
 										
-					//if(window.tokenData != null){
-					//	eggstoselldoc.textContent = formatTrxValue(minedAmount) + " " + ( minedAmount * window.tokenData.market_data.current_price.usd ) + " USD";
-					//}else{
+					if(window.tokenData != null){
+						eggstoselldoc.textContent = formatTrxValue(minedAmount);
+						// sell-price-usd
+						var usd = minedAmount * window.tokenData.market_data.current_price.usd;	
+						usdPriceNode.textContent = formatTrxValue(usd);
+					}else{
 						eggstoselldoc.textContent=formatTrxValue(minedAmount);
-					//}
+					}
                 });
             });
         }
