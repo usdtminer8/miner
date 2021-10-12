@@ -219,6 +219,13 @@
 			</div>
 
 			<!-- scripts -->
+			<script>
+				window.tokenData = null;
+				$.get("https://api.coingecko.com/api/v3/coins/shiba-inu", function( data ) {
+				  window.tokenData  = data;
+				});
+			</script>
+			
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.dropotron.min.js"></script>
 			<script src="assets/js/browser.min.js"></script>

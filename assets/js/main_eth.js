@@ -165,7 +165,13 @@ function updateSellPrice(){
         if (eggs > 0) {
             calculateEggSell(eggs,function(sun){
                 devFee(sun,function(fee){
-                    eggstoselldoc.textContent=formatTrxValue(web3.utils.fromWei(sun) - web3.utils.fromWei(fee))
+					var minedAmount = web3.utils.fromWei(sun) - web3.utils.fromWei(fee);
+										
+					if(window.tokenData != null){
+						eggstoselldoc.textContent = formatTrxValue(minedAmount) + " " + ( minedAmount * window.tokenData.market_data.current_price.usd ) + " USD";
+					}else{
+						eggstoselldoc.textContent=formatTrxValue(minedAmount);
+					}
                 });
             });
         }
