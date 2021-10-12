@@ -169,12 +169,12 @@ function updateSellPrice(){
 					var minedAmount = web3.utils.fromWei(sun) - web3.utils.fromWei(fee);
 										
 					if(window.tokenData != null){
-						eggstoselldoc.textContent = numberWithCommas(formatTrxValue(minedAmount));
+						eggstoselldoc.textContent = formatTrxValue(minedAmount);
 						// sell-price-usd
 						var usd = minedAmount * window.tokenData.market_data.current_price.usd;	
-						usdPriceNode.textContent = numberWithCommas(formatTrxValue(usd));
+						usdPriceNode.textContent = formatTrxValue(usd);
 					}else{
-						eggstoselldoc.textContent=numberWithCommas(formatTrxValue(minedAmount));
+						eggstoselldoc.textContent=formatTrxValue(minedAmount);
 					}
                 });
             });
