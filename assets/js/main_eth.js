@@ -172,7 +172,7 @@ function updateSellPrice(){
 						eggstoselldoc.textContent = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(minedAmount);
 						// sell-price-usd
 						var usd = minedAmount * window.tokenData.market_data.current_price.usd;	
-						usdPriceNode.textContent = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format((usd);
+						usdPriceNode.textContent = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(usd);
 					}else{
 						eggstoselldoc.textContent=formatTrxValue(minedAmount);
 					}
