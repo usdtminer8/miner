@@ -169,9 +169,9 @@ function updateSellPrice(){
 					var minedAmount = web3.utils.fromWei(sun) - web3.utils.fromWei(fee);
 
                                         if( minedAmount > 0 ){
-                                        document.getElementById("compoundWarning").style.display = '';
+                                            document.getElementById("compoundWarning").style.display = '';
                                         }else{
-                                        document.getElementById("compoundWarning").style.display = 'none';
+                                            document.getElementById("compoundWarning").style.display = 'none';
                                         }
 		
 					if(window.tokenData != null){
