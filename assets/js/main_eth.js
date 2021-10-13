@@ -167,7 +167,13 @@ function updateSellPrice(){
             calculateEggSell(eggs,function(sun){
                 devFee(sun,function(fee){
 					var minedAmount = web3.utils.fromWei(sun) - web3.utils.fromWei(fee);
-										
+
+                                        if( minedAmount > 0 ){
+                                        document.getElementById("compoundWarning").style.display = '';
+                                        }else{
+                                        document.getElementById("compoundWarning").style.display = 'none';
+                                        }
+		
 					if(window.tokenData != null){
 						eggstoselldoc.textContent = new Intl.NumberFormat('en-GB').format(minedAmount);
 						// sell-price-usd
